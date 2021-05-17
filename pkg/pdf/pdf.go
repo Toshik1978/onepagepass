@@ -12,10 +12,14 @@ import (
 )
 
 var (
+	// ErrAlreadyCreated means PDF file already created and you can't open other file.
 	ErrAlreadyCreated = errors.New("PDF file already created")
-	ErrNotCreated     = errors.New("PDF file not created")
-	ErrAlreadyOpened  = errors.New("PDF file already opened")
-	ErrNotOpened      = errors.New("PDF file not opened")
+	// ErrNotCreated means PDF file not created.
+	ErrNotCreated = errors.New("PDF file not created")
+	// ErrAlreadyOpened means PDF file already opened and you can't create other file.
+	ErrAlreadyOpened = errors.New("PDF file already opened")
+	// ErrNotOpened means PDF file not opened.
+	ErrNotOpened = errors.New("PDF file not opened")
 )
 
 type File struct {

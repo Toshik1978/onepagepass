@@ -16,9 +16,13 @@ const (
 
 // Converter declare implementation of the main module.
 type Converter struct {
-	pdfPath       string
-	convertedPath string
-	dpi           float64
+	src     PdfFile
+	srcPath string
+
+	dst     PdfFile
+	dstPath string
+
+	dpi float64
 }
 
 // New creates new instance of Converter.
@@ -26,46 +30,47 @@ func New(pdfPath string, dpi float64) *Converter {
 	if dpi == 0 {
 		dpi = defaultDPI
 	}
+	dstPath := strings.Replace(pdfPath, ".pdf", ".converted.pdf", 1)
 
 	return &Converter{
-		pdfPath:       pdfPath,
-		convertedPath: strings.Replace(pdfPath, ".pdf", ".converted.pdf", 1),
-		dpi:           dpi,
+		src:     pdf.New(),
+		srcPath: pdfPath,
+		dst:     pdf.New(),
+		dstPath: dstPath,
+		dpi:     dpi,
 	}
 }
 
 // Run runs converting.
 func (c Converter) Run() error {
-	src := pdf.New()
-	if err := src.Open(c.pdfPath); err != nil {
+	if err := c.src.Open(c.srcPath); err != nil {
 		return fmt.Errorf("failed to open PDF file: %w", err)
 	}
-	defer func() { _ = src.Close() }()
+	defer func() { _ = c.src.Close() }()
 
-	dst := pdf.New()
-	if err := dst.Create(); err != nil {
+	if err := c.dst.Create(); err != nil {
 		return fmt.Errorf("failed to create PDF file: %w", err)
 	}
 
-	if err := c.processPDF(src, dst); err != nil {
+	if err := c.processPdf(); err != nil {
 		return fmt.Errorf("failed to process PDF file: %w", err)
 	}
 
-	if err := dst.Save(c.convertedPath); err != nil {
+	if err := c.dst.Save(c.dstPath); err != nil {
 		return fmt.Errorf("failed to save PDF file: %w", err)
 	}
 	return nil
 }
 
-func (c Converter) processPDF(src, dst *pdf.File) error {
-	for i := 0; i < src.NumPages(); i++ {
-		curr, err := src.Page(i, c.dpi)
+func (c Converter) processPdf() error {
+	for i := 0; i < c.src.NumPages(); i++ {
+		curr, err := c.src.Page(i, c.dpi)
 		if err != nil {
 			return fmt.Errorf("failed to get PDF page: %w", err)
 		}
 
-		if i != src.NumPages()-1 {
-			next, err := src.Page(i+1, c.dpi)
+		if i != c.src.NumPages()-1 {
+			next, err := c.src.Page(i+1, c.dpi)
 			if err != nil {
 				return fmt.Errorf("failed to get PDF page: %w", err)
 			}
@@ -75,7 +80,7 @@ func (c Converter) processPDF(src, dst *pdf.File) error {
 			i++
 		}
 
-		if err := dst.AddPage(curr); err != nil {
+		if err := c.dst.AddPage(curr); err != nil {
 			return fmt.Errorf("failed to add PDF page: %w", err)
 		}
 	}

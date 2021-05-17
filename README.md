@@ -1,5 +1,5 @@
 [![Build and Test](https://github.com/Toshik1978/onepagepass/workflows/Build%20and%20Test/badge.svg)](https://github.com/Toshik1978/onepagepass/actions) 
-[![Code coverage](https://codecov.io/gh/Toshik1978/onepagepass/branch/master/graph/badge.svg?token=XMW1GEFG4U)](https://codecov.io/gh/Toshik1978/onepagepass)
+[![Coverage Status](https://coveralls.io/repos/github/Toshik1978/onepagepass/badge.svg?branch=master)](https://coveralls.io/github/Toshik1978/onepagepass?branch=master)
 ## One-page passport
 
 CLI application, gives possibility to convert PDF scan of document to the format "two-pages per A4".

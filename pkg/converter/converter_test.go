@@ -19,10 +19,9 @@ func TestConverter(t *testing.T) {
 type converterTestSuite struct {
 	suite.Suite
 
+	img     image.Image
 	srcPath string
 	dstPath string
-
-	img image.Image
 }
 
 func (s *converterTestSuite) SetupSuite() {

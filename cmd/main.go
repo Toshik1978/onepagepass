@@ -16,8 +16,8 @@ const (
 )
 
 var (
-	Buildstamp = "undefined"
-	Commit     = "undefined"
+	Buildstamp = "undefined" //nolint:revive
+	Commit     = "undefined" //nolint:revive
 )
 
 func main() {

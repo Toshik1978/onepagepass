@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	convertermock "github.com/Toshik1978/onepagepass/pkg/converter/mocks"
+
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )

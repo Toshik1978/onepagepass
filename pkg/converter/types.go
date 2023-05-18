@@ -4,8 +4,9 @@ import (
 	"image"
 )
 
-//go:generate mockery --name PdfFile --filename converter.go --outpkg convertermock
 // PdfFile declare interface for PDF file.
+//
+//go:generate mockery --name PdfFile --filename converter.go --outpkg convertermock
 type PdfFile interface {
 	Create() error
 	Save(path string) error

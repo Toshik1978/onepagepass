@@ -39,7 +39,7 @@ func (s *converterTestSuite) SetupSuite() {
 	s.img = img
 }
 
-func (s converterTestSuite) TestRunOpenFailed() {
+func (s *converterTestSuite) TestRunOpenFailed() {
 	errFailed := errors.New("failed")
 
 	srcMock := convertermock.PdfFile{}
@@ -66,7 +66,7 @@ func (s converterTestSuite) TestRunOpenFailed() {
 	s.ErrorIs(err, errFailed)
 }
 
-func (s converterTestSuite) TestRunCreateFailed() {
+func (s *converterTestSuite) TestRunCreateFailed() {
 	errFailed := errors.New("failed")
 
 	srcMock := convertermock.PdfFile{}
@@ -101,7 +101,7 @@ func (s converterTestSuite) TestRunCreateFailed() {
 	s.ErrorIs(err, errFailed)
 }
 
-func (s converterTestSuite) TestRunSaveFailed() {
+func (s *converterTestSuite) TestRunSaveFailed() {
 	errFailed := errors.New("failed")
 
 	srcMock := convertermock.PdfFile{}
@@ -152,7 +152,7 @@ func (s converterTestSuite) TestRunSaveFailed() {
 	s.ErrorIs(err, errFailed)
 }
 
-func (s converterTestSuite) TestRunSucceeded() {
+func (s *converterTestSuite) TestRunSucceeded() {
 	srcMock := convertermock.PdfFile{}
 	srcMock.
 		On("Open", s.srcPath).

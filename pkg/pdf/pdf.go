@@ -12,6 +12,10 @@ import (
 	"github.com/signintech/gopdf"
 )
 
+// jpegQuality is the JPEG encoding quality for embedded page images. Scans carry
+// fine text, so we stay well above the stdlib default (75) to preserve legibility.
+const jpegQuality = 90
+
 var (
 	// ErrAlreadyCreated means PDF file already created and you can't open other file.
 	ErrAlreadyCreated = errors.New("PDF file already created")
@@ -115,7 +119,7 @@ func (p *File) AddPage(img image.Image) error {
 		p.w.AddPage()
 
 		buffer := new(bytes.Buffer)
-		err := jpeg.Encode(buffer, img, &jpeg.Options{Quality: jpeg.DefaultQuality})
+		err := jpeg.Encode(buffer, img, &jpeg.Options{Quality: jpegQuality})
 		if err != nil {
 			return fmt.Errorf("failed to encode jpeg: %w", err)
 		}

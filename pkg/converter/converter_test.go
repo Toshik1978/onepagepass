@@ -214,6 +214,23 @@ func (s *converterTestSuite) TestNewCustomDPI() {
 	s.Equal("scan.converted.pdf", c.dstPath)
 }
 
+// TestNewDestinationNeverCollidesWithSource guards against clobbering the input:
+// the destination must differ from the source regardless of extension casing,
+// a missing extension, or ".pdf" appearing inside a parent directory name.
+func (s *converterTestSuite) TestNewDestinationNeverCollidesWithSource() {
+	cases := map[string]string{
+		"scan.PDF":                    "scan.converted.pdf",
+		"scan":                        "scan.converted.pdf",
+		"scan.Pdf":                    "scan.converted.pdf",
+		"/home/my.pdf.files/scan.pdf": "/home/my.pdf.files/scan.converted.pdf",
+	}
+	for src, want := range cases {
+		c := New(src, 0)
+		s.Equal(want, c.dstPath, "src=%s", src)
+		s.NotEqual(c.srcPath, c.dstPath, "src=%s", src)
+	}
+}
+
 func (s *converterTestSuite) TestRunFirstPageFailed() {
 	errFailed := errors.New("failed")
 

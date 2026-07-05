@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
+	"path/filepath"
 	"strings"
 
 	"github.com/Toshik1978/onepagepass/pkg/pdf"
@@ -30,7 +31,9 @@ func New(pdfPath string, dpi float64) *Converter {
 	if dpi == 0 {
 		dpi = defaultDPI
 	}
-	dstPath := strings.Replace(pdfPath, ".pdf", ".converted.pdf", 1)
+	// Replace only the trailing extension (any case) so the destination never
+	// collides with the source path and clobbers the original file.
+	dstPath := strings.TrimSuffix(pdfPath, filepath.Ext(pdfPath)) + ".converted.pdf"
 
 	return &Converter{
 		src:     pdf.New(),

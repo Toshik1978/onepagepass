@@ -1,3 +1,4 @@
+// Package pdf wraps reading (MuPDF via go-fitz) and writing (gopdf) of PDF files.
 package pdf
 
 import (
@@ -22,6 +23,7 @@ var (
 	ErrNotOpened = errors.New("PDF file not opened")
 )
 
+// File is a PDF helper that either reads an existing document or builds a new one.
 type File struct {
 	r *fitz.Document
 	w *gopdf.GoPdf
@@ -40,17 +42,19 @@ func (p *File) Create() error {
 
 	p.w = &gopdf.GoPdf{}
 	p.w.Start(gopdf.Config{PageSize: *gopdf.PageSizeA4})
+
 	return nil
 }
 
 // Save saved PDF file in given destination.
-func (p File) Save(path string) error {
+func (p *File) Save(path string) error {
 	if p.w != nil {
 		if err := p.w.WritePdf(path); err != nil {
 			return fmt.Errorf("failed to save PDF file: %w", err)
 		}
 		return nil
 	}
+
 	return ErrNotCreated
 }
 
@@ -65,32 +69,35 @@ func (p *File) Open(path string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open PDF file: %w", err)
 	}
+
 	return nil
 }
 
 // Close closes PDF file.
-func (p File) Close() error {
+func (p *File) Close() error {
 	if p.r != nil {
 		if err := p.r.Close(); err != nil {
 			return fmt.Errorf("failed to close PDF file: %w", err)
 		}
 	}
+
 	return nil
 }
 
 // NumPages return number of pages in PDF file.
-func (p File) NumPages() int {
+func (p *File) NumPages() int {
 	if p.r != nil {
 		return p.r.NumPage()
 	}
 	if p.w != nil {
 		return p.w.GetNumberOfPages()
 	}
+
 	return 0
 }
 
 // Page return given page of PDF file.
-func (p File) Page(page int, dpi float64) (image.Image, error) {
+func (p *File) Page(page int, dpi float64) (image.Image, error) {
 	if p.r != nil {
 		img, err := p.r.ImageDPI(page, dpi)
 		if err != nil {
@@ -98,11 +105,12 @@ func (p File) Page(page int, dpi float64) (image.Image, error) {
 		}
 		return img, nil
 	}
+
 	return nil, ErrNotOpened
 }
 
 // AddPage adds page to PDF file.
-func (p File) AddPage(img image.Image) error {
+func (p *File) AddPage(img image.Image) error {
 	if p.w != nil {
 		p.w.AddPage()
 
@@ -119,7 +127,9 @@ func (p File) AddPage(img image.Image) error {
 		if err := p.w.ImageByHolder(pdfImage, 0, 0, gopdf.PageSizeA4); err != nil {
 			return fmt.Errorf("failed to add PDF image: %w", err)
 		}
+
 		return nil
 	}
+
 	return ErrNotCreated
 }

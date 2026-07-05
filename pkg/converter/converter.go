@@ -1,11 +1,11 @@
+// Package converter re-lays a rasterized PDF into a two-pages-per-A4 format.
 package converter
 
 import (
 	"fmt"
 	"image"
+	"image/draw"
 	"strings"
-
-	"github.com/disintegration/imaging"
 
 	"github.com/Toshik1978/onepagepass/pkg/pdf"
 )
@@ -59,6 +59,7 @@ func (c Converter) Run() error {
 	if err := c.dst.Save(c.dstPath); err != nil {
 		return fmt.Errorf("failed to save PDF file: %w", err)
 	}
+
 	return nil
 }
 
@@ -75,8 +76,7 @@ func (c Converter) processPdf() error {
 				return fmt.Errorf("failed to get PDF page: %w", err)
 			}
 
-			next = imaging.Crop(next, image.Rect(next.Bounds().Min.X, next.Bounds().Min.Y, next.Bounds().Max.X, next.Bounds().Max.Y/2))
-			curr = imaging.Paste(curr, next, image.Point{X: 0, Y: curr.Bounds().Max.Y / 2})
+			curr = mergePages(curr, next)
 			i++
 		}
 
@@ -84,5 +84,21 @@ func (c Converter) processPdf() error {
 			return fmt.Errorf("failed to add PDF page: %w", err)
 		}
 	}
+
 	return nil
+}
+
+// mergePages packs two document scans onto a single sheet: curr keeps its upper
+// half, and its lower half is replaced by the upper half of next.
+func mergePages(curr, next image.Image) image.Image {
+	b := curr.Bounds()
+	merged := image.NewRGBA(b)
+	draw.Draw(merged, b, curr, b.Min, draw.Src)
+
+	// Copy the top of next into the lower half of curr.
+	midY := b.Min.Y + b.Dy()/2
+	dstRect := image.Rect(b.Min.X, midY, b.Max.X, b.Max.Y)
+	draw.Draw(merged, dstRect, next, next.Bounds().Min, draw.Src)
+
+	return merged
 }

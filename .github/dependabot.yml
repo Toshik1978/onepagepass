@@ -1,31 +1,36 @@
 version: 2
 updates:
+  # Go modules
   - package-ecosystem: gomod
     directory: "/"
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "build(deps)"
+      prefix: build
+      include: scope
     groups:
-      go-dependencies:
+      gomod:
         patterns:
           - "*"
         update-types:
           - minor
           - patch
 
+  # GitHub Actions used by the CI workflow
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "ci(deps)"
+      prefix: ci
+      include: scope
     groups:
       github-actions:
         patterns:
           - "*"
         update-types:
+          - major
           - minor
           - patch

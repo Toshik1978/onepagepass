@@ -56,7 +56,7 @@ task build          # compile bin/onepagepass
 task clean          # remove build artifacts and test cache
 ```
 
-See [`CLAUDE.md`](./CLAUDE.md) / [`AGENTS.md`](./AGENTS.md) for contributor and agent onboarding notes.
+See [`CLAUDE.md`](./CLAUDE.md) for contributor and agent onboarding notes.
 
 ## License
 

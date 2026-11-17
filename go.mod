@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	github.com/gen2brain/go-fitz v1.28.2
-	github.com/signintech/gopdf v0.38.3
+	github.com/signintech/gopdf v0.38.4
 	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli/v3 v3.14.0
 )
